@@ -1,7 +1,7 @@
 ﻿namespace GothicSaveBackupper;
 public static class Helpers
 {
-    public static ConsoleColor _basicForegroundColor = Console.ForegroundColor;
+    public static ConsoleColor _basicForegroundColor = ConsoleColor.White;
 
     public static void ConsoleWriteLine(string message, ConsoleColor? color = null)
     {

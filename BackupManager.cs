@@ -5,7 +5,7 @@ public class BackupManager
     public FileSystemWatcher FileSystemWatcher { get; init; }
     private DateTime _lastBackupTime = DateTime.Today;
     private string _backupFolderName = "Backups";
-
+    private List<string> filesToCopy;
     public BackupManager(string backupFolderName)
     {
         _backupFolderName = backupFolderName;
@@ -15,12 +15,25 @@ public class BackupManager
         fsw.Created += new FileSystemEventHandler(fsw_Changed);
         fsw.Renamed += new RenamedEventHandler(fsw_Renamed);
         fsw.Deleted += new FileSystemEventHandler(fsw_Deleted);
-        
+
+        filesToCopy = new();
+        DiscoverFiles();
+
+        if (filesToCopy.Count > 0)
+
         ConsoleWriteLine("File system watcher created.");
         CreateBackupFolder();
         FileSystemWatcher = fsw;
     }
 
+    private void DiscoverFiles()
+    {
+        foreach (var file in Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory,"*.SAV"))
+        {
+            filesToCopy.Add(file);
+            ConsoleWriteLine($"[Discovered file]: {Path.GetFileNameWithoutExtension(file)}", ConsoleColor.DarkCyan);
+        }
+    }
 
     void fsw_Deleted(object sender, FileSystemEventArgs e)
     {
